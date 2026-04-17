@@ -26,6 +26,12 @@ pub enum ComputeError {
     #[error("user identity is required by configuration but no user_id is bound")]
     UserIdentityRequired,
 
+    #[error("invalid {field} encoding: {details}")]
+    InvalidIdentityEncoding {
+        field: &'static str,
+        details: String,
+    },
+
     #[error("missing parent directory for path {0}")]
     MissingParentDirectory(PathBuf),
 }

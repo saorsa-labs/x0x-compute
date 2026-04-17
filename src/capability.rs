@@ -5,7 +5,7 @@ use crate::config::ComputeConfig;
 use crate::x0x_identity::AgentIdentitySnapshot;
 
 /// Compute capability advertisement for trusted meshes.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CapabilityAnnouncement {
     pub protocol_version: u32,
     pub identity: AgentIdentitySnapshot,
@@ -16,7 +16,7 @@ pub struct CapabilityAnnouncement {
 }
 
 /// Local hardware profile.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct HardwareProfile {
     pub hostname: Option<String>,
     pub cpu_brand: String,
@@ -26,7 +26,7 @@ pub struct HardwareProfile {
 }
 
 /// Mesh policy derived from x0x-compute configuration.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct TrustedMeshPolicy {
     pub mesh_name: String,
     pub trusted_friends_only: bool,

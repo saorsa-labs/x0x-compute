@@ -102,13 +102,26 @@ That means x0x-compute should keep room for a dedicated data-plane transport for
 
 But the trust and coordination story should still remain x0x-native.
 
+## Phase 1: trusted capability gossip
+
+Phase 1 keeps the feature set intentionally narrow:
+
+- subscribe to `x0x.compute.capabilities.v1`
+- only accept announcements whose signed x0x sender matches the advertised `agent_id`
+- evaluate trust with x0x's `TrustEvaluator` using both `agent_id` and `machine_id`
+- respect machine pinning from the x0x contact store
+- keep an in-memory registry of accepted peers
+
+This means x0x-compute does not merely trust a claimed agent string. It trusts the signed x0x sender identity and then cross-checks the advertised machine against x0x's trust model.
+
 ## Initial local daemon
 
-The first daemon surface is intentionally small:
+The first daemon surface is intentionally small but Phase 1 adds the trusted peer view:
 
 - `GET /health`
 - `GET /v1/identity`
 - `GET /v1/capabilities/local`
+- `GET /v1/capabilities/peers`
 - `GET /v1/config`
 
 This gives operators a stable local surface while the x0x-backed coordination layer evolves.

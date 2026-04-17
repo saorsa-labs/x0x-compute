@@ -28,12 +28,13 @@ pub struct MeshConfig {
     pub prefer_user_identity: bool,
 }
 
-/// Optional overrides for x0x key paths.
+/// Optional overrides for x0x identity and contact-store paths.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct X0xConfig {
     pub machine_key_path: Option<PathBuf>,
     pub agent_key_path: Option<PathBuf>,
     pub user_key_path: Option<PathBuf>,
+    pub contact_store_path: Option<PathBuf>,
 }
 
 impl Default for ComputeConfig {

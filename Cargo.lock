@@ -5356,8 +5356,11 @@ name = "x0x-compute"
 version = "0.1.0"
 dependencies = [
  "axum",
+ "bytes",
  "clap",
  "dirs",
+ "hex",
+ "http-body-util",
  "serde",
  "serde_json",
  "sysinfo",
@@ -5365,6 +5368,7 @@ dependencies = [
  "thiserror 2.0.18",
  "tokio",
  "toml",
+ "tower",
  "tracing",
  "tracing-subscriber",
  "x0x",

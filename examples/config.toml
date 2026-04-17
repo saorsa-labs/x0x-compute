@@ -16,3 +16,4 @@ prefer_user_identity = true
 machine_key_path = "./var/x0x-compute/machine.key"
 agent_key_path = "./var/x0x-compute/agent.key"
 user_key_path = "./var/x0x-compute/user.key"
+contact_store_path = "./var/x0x-compute/contacts.json"

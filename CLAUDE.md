@@ -41,9 +41,10 @@ RUSTDOCFLAGS="-D warnings" cargo doc --all-features --no-deps
 ### Current crate layout
 
 - `src/config.rs` — local config loading/writing and defaults
-- `src/x0x_identity.rs` — x0x agent construction and identity snapshots
+- `src/x0x_identity.rs` — x0x agent construction, canonical hex ids, and identity snapshots
 - `src/capability.rs` — local capability announcements derived from x0x identity + machine profile
-- `src/daemon.rs` — lightweight local daemon surface for health, identity, and local capability inspection
+- `src/mesh.rs` — trusted capability filtering, peer registry, and x0x gossip subscription loop
+- `src/daemon.rs` — lightweight local daemon surface for health, identity, local capability inspection, and trusted peer views
 - `src/bin/x0x-compute.rs` — operator CLI
 - `src/bin/x0x-computed.rs` — daemon entrypoint
 

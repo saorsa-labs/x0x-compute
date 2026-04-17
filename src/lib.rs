@@ -4,13 +4,21 @@ pub mod capability;
 pub mod config;
 pub mod daemon;
 pub mod error;
+pub mod mesh;
 pub mod x0x_identity;
 
 pub use capability::{CapabilityAnnouncement, HardwareProfile, TrustedMeshPolicy};
 pub use config::{ComputeConfig, MeshConfig, X0xConfig};
 pub use daemon::ComputeDaemon;
 pub use error::{ComputeError, Result};
-pub use x0x_identity::{build_agent, AgentIdentitySnapshot};
+pub use mesh::{
+    announce_local_capability, start_capability_subscription_loop, CapabilityDisposition,
+    PeerCapabilityRecord, TrustedPeerRegistry,
+};
+pub use x0x_identity::{
+    build_agent, encode_agent_id, encode_machine_id, encode_user_id, parse_agent_id_hex,
+    parse_machine_id_hex, AgentIdentitySnapshot,
+};
 
 /// Reserved topic for compute capability advertisements.
 pub const CAPABILITY_TOPIC: &str = "x0x.compute.capabilities.v1";

@@ -51,15 +51,21 @@ See [`docs/architecture.md`](docs/architecture.md) for the fuller design.
 
 ## Current status
 
-This repository starts with the focused scaffold for the trusted-friends model:
+Phase 1 is now in place for the trusted-friends model:
 
 - config loading and defaults
-- x0x identity integration
+- x0x identity integration with **full canonical hex ids**
 - local capability snapshot generation
+- x0x capability gossip subscription loop
+- trusted peer filtering using x0x trust evaluation over both `agent_id` and `machine_id`
+- machine-pinning awareness via the x0x contact store
+- in-memory trusted peer registry
 - lightweight daemon endpoints:
   - `GET /health`
   - `GET /v1/identity`
   - `GET /v1/capabilities/local`
+  - `GET /v1/capabilities/peers`
+  - `GET /v1/config`
 - operator CLI commands for config, identity, capability, and daemon startup
 
 ## Install
@@ -114,6 +120,12 @@ Or run the daemon entrypoint directly:
 x0x-computed
 ```
 
+Inspect the trusted peer view from the daemon:
+
+```bash
+curl http://127.0.0.1:12800/v1/capabilities/peers
+```
+
 ## Configuration
 
 Default config path:
@@ -122,6 +134,8 @@ Default config path:
 - Linux: `~/.config/x0x-compute/config.toml`
 
 The shipped example config is at [`examples/config.toml`](examples/config.toml).
+
+For trusted-friends Phase 1, the x0x contact store matters directly: x0x-compute uses x0x's trust evaluation and machine pinning when deciding whether to accept remote capability announcements.
 
 ## Development
 
@@ -142,8 +156,8 @@ just check
 
 ### Phase 1
 - x0x gossip capability advertisements
-- trusted-peer filtering using x0x contacts and trust levels
-- named-mesh coordination topics
+- trusted-peer filtering using x0x contacts, trust evaluation, and machine pinning
+- in-memory trusted peer registry
 
 ### Phase 2
 - runtime adapters for local model engines
