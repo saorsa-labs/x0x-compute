@@ -1,0 +1,18 @@
+api_bind = "127.0.0.1:12800"
+data_dir = "./var/x0x-compute"
+capability_topic = "x0x.compute.capabilities.v1"
+join_network_on_start = false
+announce_on_start = false
+require_user_id = false
+resource_announce_interval_secs = 60
+
+[mesh]
+name = "friends"
+trusted_friends_only = true
+require_trusted_contacts = true
+prefer_user_identity = true
+
+[x0x]
+machine_key_path = "./var/x0x-compute/machine.key"
+agent_key_path = "./var/x0x-compute/agent.key"
+user_key_path = "./var/x0x-compute/user.key"

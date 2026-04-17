@@ -1,0 +1,39 @@
+[package]
+name = "x0x-compute"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85.0"
+license = "MIT OR Apache-2.0"
+description = "Trusted-friends compute mesh built on x0x identities, trust, and gossip"
+repository = "https://github.com/saorsa-labs/x0x-compute"
+homepage = "https://github.com/saorsa-labs/x0x-compute"
+documentation = "https://docs.rs/x0x-compute"
+readme = "README.md"
+keywords = ["x0x", "compute", "ai", "p2p", "trusted-mesh"]
+categories = ["network-programming", "command-line-utilities"]
+authors = ["David Irvine <david@saorsalabs.com>"]
+
+[dependencies]
+axum = { version = "0.7", features = ["json"] }
+clap = { version = "4.5", features = ["derive"] }
+dirs = "5.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sysinfo = "0.30"
+thiserror = "2.0"
+tokio = { version = "1", features = ["macros", "net", "rt-multi-thread", "signal"] }
+toml = "0.8"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+x0x = "0.17.3"
+
+[dev-dependencies]
+tempfile = "3.14"
+
+[[bin]]
+name = "x0x-compute"
+path = "src/bin/x0x-compute.rs"
+
+[[bin]]
+name = "x0x-computed"
+path = "src/bin/x0x-computed.rs"
