@@ -44,7 +44,8 @@ RUSTDOCFLAGS="-D warnings" cargo doc --all-features --no-deps
 - `src/x0x_identity.rs` — x0x agent construction, canonical hex ids, and identity snapshots
 - `src/capability.rs` — local capability announcements derived from x0x identity + machine profile
 - `src/mesh.rs` — trusted capability filtering, peer registry, and x0x gossip subscription loop
-- `src/daemon.rs` — lightweight local daemon surface for health, identity, local capability inspection, and trusted peer views
+- `src/runtime.rs` — runtime adapter trait, local inventory, reservations, and OpenAI-compatible skeleton types
+- `src/daemon.rs` — local daemon surface for health, identity, inventory, reservations, trusted peer views, and OpenAI-compatible endpoints
 - `src/bin/x0x-compute.rs` — operator CLI
 - `src/bin/x0x-computed.rs` — daemon entrypoint
 

@@ -51,7 +51,7 @@ See [`docs/architecture.md`](docs/architecture.md) for the fuller design.
 
 ## Current status
 
-Phase 1 is now in place for the trusted-friends model:
+Phase 2a is now in place for the trusted-friends model:
 
 - config loading and defaults
 - x0x identity integration with **full canonical hex ids**
@@ -60,12 +60,22 @@ Phase 1 is now in place for the trusted-friends model:
 - trusted peer filtering using x0x trust evaluation over both `agent_id` and `machine_id`
 - machine-pinning awareness via the x0x contact store
 - in-memory trusted peer registry
+- runtime adapter trait for local model backends
+- static local model inventory from config
+- slot-based reservation API
+- minimal OpenAI-compatible local gateway skeleton
 - lightweight daemon endpoints:
   - `GET /health`
   - `GET /v1/identity`
   - `GET /v1/capabilities/local`
   - `GET /v1/capabilities/peers`
   - `GET /v1/config`
+  - `GET /v1/models/local`
+  - `GET /v1/reservations`
+  - `POST /v1/reservations`
+  - `DELETE /v1/reservations/:id`
+  - `GET /v1/openai/models`
+  - `POST /v1/openai/chat/completions`
 - operator CLI commands for config, identity, capability, and daemon startup
 
 ## Install
@@ -126,6 +136,34 @@ Inspect the trusted peer view from the daemon:
 curl http://127.0.0.1:12800/v1/capabilities/peers
 ```
 
+Inspect the local model inventory:
+
+```bash
+curl http://127.0.0.1:12800/v1/models/local
+```
+
+Create a reservation for a local model slot:
+
+```bash
+curl -X POST http://127.0.0.1:12800/v1/reservations \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"qwen3.5:32b","consumer":"alice","requested_slots":1}'
+```
+
+List OpenAI-compatible models:
+
+```bash
+curl http://127.0.0.1:12800/v1/openai/models
+```
+
+Send a minimal OpenAI-compatible chat completion request:
+
+```bash
+curl -X POST http://127.0.0.1:12800/v1/openai/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"qwen3.5:32b","messages":[{"role":"user","content":"hello mesh"}]}'
+```
+
 ## Configuration
 
 Default config path:
@@ -135,7 +173,9 @@ Default config path:
 
 The shipped example config is at [`examples/config.toml`](examples/config.toml).
 
-For trusted-friends Phase 1, the x0x contact store matters directly: x0x-compute uses x0x's trust evaluation and machine pinning when deciding whether to accept remote capability announcements.
+For trusted-friends Phase 2a, the x0x contact store still matters directly: x0x-compute uses x0x's trust evaluation and machine pinning when deciding whether to accept remote capability announcements.
+
+The local runtime layer is configured statically in `config.toml` for now. That keeps Phase 2a tight and deterministic while making the daemon and gateway surfaces available for the next round of backend integration.
 
 ## Development
 
@@ -160,9 +200,9 @@ just check
 - in-memory trusted peer registry
 
 ### Phase 2
-- runtime adapters for local model engines
-- reservation and scheduling flows for trusted groups
-- OpenAI-compatible local gateway
+- real local runtime backends behind the adapter trait
+- richer reservation and scheduling flows for trusted groups
+- OpenAI-compatible local gateway beyond the skeleton runtime
 
 ### Phase 3
 - direct peer-to-peer tensor/job transport tuned for trusted groups

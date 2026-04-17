@@ -12,6 +12,26 @@ trusted_friends_only = true
 require_trusted_contacts = true
 prefer_user_identity = true
 
+[runtime]
+backend = "skeleton"
+skeleton_response_prefix = "x0x-compute skeleton response"
+
+[[models]]
+id = "qwen3.5:32b"
+family = "qwen3.5"
+context_window_tokens = 131072
+max_output_tokens = 8192
+max_parallel_reservations = 2
+tags = ["coding", "reasoning"]
+
+[[models]]
+id = "gemma-4:27b"
+family = "gemma-4"
+context_window_tokens = 65536
+max_output_tokens = 4096
+max_parallel_reservations = 1
+tags = ["fast"]
+
 [x0x]
 machine_key_path = "./var/x0x-compute/machine.key"
 agent_key_path = "./var/x0x-compute/agent.key"

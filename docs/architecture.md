@@ -114,17 +114,37 @@ Phase 1 keeps the feature set intentionally narrow:
 
 This means x0x-compute does not merely trust a claimed agent string. It trusts the signed x0x sender identity and then cross-checks the advertised machine against x0x's trust model.
 
+## Phase 2a: local runtime skeleton
+
+Phase 2a adds the thinnest useful local runtime layer without pretending to be a full inference engine.
+
+It introduces:
+
+- a `RuntimeAdapter` trait for local model backends
+- static local model inventory from config
+- slot-based reservations for local scheduling
+- a minimal OpenAI-compatible local gateway surface
+- a deterministic skeleton backend for testing and integration wiring
+
+The important architectural rule is that this remains a **local runtime abstraction**, not a public market or billing system.
+
 ## Initial local daemon
 
-The first daemon surface is intentionally small but Phase 1 adds the trusted peer view:
+The daemon surface now covers both trusted peer coordination and a minimal local runtime API:
 
 - `GET /health`
 - `GET /v1/identity`
 - `GET /v1/capabilities/local`
 - `GET /v1/capabilities/peers`
 - `GET /v1/config`
+- `GET /v1/models/local`
+- `GET /v1/reservations`
+- `POST /v1/reservations`
+- `DELETE /v1/reservations/:id`
+- `GET /v1/openai/models`
+- `POST /v1/openai/chat/completions`
 
-This gives operators a stable local surface while the x0x-backed coordination layer evolves.
+This keeps the local operator and app surface stable while leaving room for real runtime backends later.
 
 ## Capability topic
 

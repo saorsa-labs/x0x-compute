@@ -64,7 +64,7 @@ impl CapabilityAnnouncement {
                 require_trusted_contacts: config.mesh.require_trusted_contacts,
                 prefer_user_identity: config.mesh.prefer_user_identity,
             },
-            available_models: Vec::new(),
+            available_models: config.models.iter().map(|model| model.id.clone()).collect(),
             observed_at_unix_secs: unix_timestamp_secs(),
         }
     }
@@ -96,6 +96,31 @@ mod tests {
         assert_eq!(capability.identity.machine_id, identity.machine_id);
         assert_eq!(capability.identity.agent_id, identity.agent_id);
         assert!(capability.policy.trusted_friends_only);
+        assert!(capability.available_models.is_empty());
         assert!(capability.observed_at_unix_secs > 0);
+    }
+
+    #[test]
+    fn capability_snapshot_includes_configured_models() {
+        let config = ComputeConfig {
+            models: vec![crate::ModelConfig {
+                id: "qwen3.5:32b".to_string(),
+                family: "qwen3.5".to_string(),
+                context_window_tokens: 131_072,
+                max_output_tokens: 8_192,
+                max_parallel_reservations: 2,
+                tags: vec!["coding".to_string()],
+            }],
+            ..ComputeConfig::default()
+        };
+        let identity = AgentIdentitySnapshot {
+            machine_id: "machine-123".to_string(),
+            agent_id: "agent-456".to_string(),
+            user_id: None,
+        };
+
+        let capability = CapabilityAnnouncement::local(&config, identity);
+
+        assert_eq!(capability.available_models, vec!["qwen3.5:32b".to_string()]);
     }
 }

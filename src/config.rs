@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::error::{ComputeError, Result};
 
 /// x0x-compute configuration.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct ComputeConfig {
     pub api_bind: SocketAddr,
     pub data_dir: PathBuf,
@@ -16,11 +16,14 @@ pub struct ComputeConfig {
     pub require_user_id: bool,
     pub resource_announce_interval_secs: u64,
     pub mesh: MeshConfig,
+    pub runtime: RuntimeConfig,
+    #[serde(default)]
+    pub models: Vec<ModelConfig>,
     pub x0x: X0xConfig,
 }
 
 /// Mesh-level policy for trusted friend groups.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct MeshConfig {
     pub name: String,
     pub trusted_friends_only: bool,
@@ -28,8 +31,36 @@ pub struct MeshConfig {
     pub prefer_user_identity: bool,
 }
 
+/// Local runtime configuration for Phase 2a.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct RuntimeConfig {
+    pub backend: RuntimeBackend,
+    pub skeleton_response_prefix: String,
+}
+
+/// Runtime backend kind.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum RuntimeBackend {
+    /// Deterministic local skeleton runtime for integration and UI wiring.
+    #[default]
+    Skeleton,
+}
+
+/// Static local model inventory entry.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct ModelConfig {
+    pub id: String,
+    pub family: String,
+    pub context_window_tokens: u32,
+    pub max_output_tokens: u32,
+    pub max_parallel_reservations: u16,
+    #[serde(default)]
+    pub tags: Vec<String>,
+}
+
 /// Optional overrides for x0x identity and contact-store paths.
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Default)]
 pub struct X0xConfig {
     pub machine_key_path: Option<PathBuf>,
     pub agent_key_path: Option<PathBuf>,
@@ -48,6 +79,8 @@ impl Default for ComputeConfig {
             require_user_id: false,
             resource_announce_interval_secs: 60,
             mesh: MeshConfig::default(),
+            runtime: RuntimeConfig::default(),
+            models: Vec::new(),
             x0x: X0xConfig::default(),
         }
     }
@@ -60,6 +93,15 @@ impl Default for MeshConfig {
             trusted_friends_only: true,
             require_trusted_contacts: true,
             prefer_user_identity: true,
+        }
+    }
+}
+
+impl Default for RuntimeConfig {
+    fn default() -> Self {
+        Self {
+            backend: RuntimeBackend::Skeleton,
+            skeleton_response_prefix: "x0x-compute skeleton response".to_string(),
         }
     }
 }
@@ -145,6 +187,13 @@ mod tests {
         assert!(config.mesh.trusted_friends_only);
         assert!(config.mesh.require_trusted_contacts);
         assert!(config.mesh.prefer_user_identity);
+    }
+
+    #[test]
+    fn default_runtime_uses_skeleton_backend() {
+        let config = ComputeConfig::default();
+        assert_eq!(config.runtime.backend, RuntimeBackend::Skeleton);
+        assert!(config.models.is_empty());
     }
 
     #[test]
